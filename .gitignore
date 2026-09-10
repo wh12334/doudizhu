@@ -1,0 +1,8 @@
+# 开发/测试产生的临时文件（不随仓库发布）
+# 规则：任何以下划线开头的目录/文件、任何日志，都不进仓库
+tools/_*/
+tests/_*/
+*.log
+node_modules/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>斗地主 · 单机版</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="icon" href="assets/avatars/landlord.png">
+</head>
+<body>
+
+<div class="app">
+
+  <!-- ============ 牌桌 ============ -->
+  <div class="table" id="table">
+
+    <!-- 顶部信息条 -->
+    <header class="topbar">
+      <div class="brand"><span class="brand-d">斗</span><span class="brand-t">斗地主</span></div>
+
+      <div class="bottom-cards" id="bottomCards">
+        <span class="bc-label">底牌</span>
+        <div class="bc-row" id="bcRow"></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>底分</span><b id="statBase">–</b></div>
+        <div class="stat"><span>倍数</span><b id="statMult">–</b></div>
+        <div class="stat"><span>我的积分</span><b id="statScore">0</b></div>
+      </div>
+
+      <div class="tools">
+        <button class="tool" id="btnMusic" title="背景音乐开关">♪</button>
+        <button class="tool" id="btnSound" title="音效开关">🔊</button>
+        <button class="tool" id="btnVoice" title="角色语音开关">🗣</button>
+        <button class="tool" id="btnHelp" title="玩法与小费">?</button>
+      </div>
+    </header>
+
+    <!-- 左座位（电脑·老王 = 2号） -->
+    <div class="seat seat-left" id="seat2">
+      <div class="role-badge" id="role2"></div>
+      <div class="avatar-wrap">
+        <img class="avatar" id="av2" src="assets/avatars/farmer2.png" alt="电脑·老王">
+        <div class="avatar-ring"></div>
+        <div class="crown">👑</div>
+        <div class="count-badge" id="cnt2">17</div>
+      </div>
+      <div class="timer" id="timer2"><span></span></div>
+      <div class="seat-info">
+        <div class="pname">电脑·老王</div>
+        <div class="ptag" id="tag2">农民</div>
+      </div>
+      <div class="bubble" id="bubble2"></div>
+    </div>
+
+    <!-- 右座位（电脑·小明 = 1号） -->
+    <div class="seat seat-right" id="seat1">
+      <div class="role-badge" id="role1"></div>
+      <div class="avatar-wrap">
+        <img class="avatar" id="av1" src="assets/avatars/farmer1.png" alt="电脑·小明">
+        <div class="avatar-ring"></div>
+        <div class="crown">👑</div>
+        <div class="count-badge" id="cnt1">17</div>
+      </div>
+      <div class="seat-info">
+        <div class="pname" id="name1">电脑·小明</div>
+        <div class="ptag" id="tag1">农民</div>
+      </div>
+      <div class="timer" id="timer1"><span></span></div>
+      <div class="bubble" id="bubble1"></div>
+    </div>
+
+    <!-- 我的座位（0号） -->
+    <div class="seat seat-bottom" id="seat0">
+      <div class="role-badge" id="role0"></div>
+      <div class="avatar-wrap">
+        <img class="avatar" id="av0" src="assets/avatars/landlord.png" alt="我">
+        <div class="avatar-ring"></div>
+        <div class="crown">👑</div>
+      </div>
+      <div class="seat-info">
+        <div class="pname">你</div>
+        <div class="ptag" id="tag0">农民</div>
+      </div>
+      <div class="timer" id="timer0"><span></span></div>
+      <div class="bubble" id="bubble0"></div>
+    </div>
+
+    <!-- 出牌区 -->
+    <div class="play-area play-left" id="play2"></div>
+    <div class="play-area play-right" id="play1"></div>
+    <div class="play-area play-bottom" id="play0"></div>
+
+    <!-- 中央提示 -->
+    <div class="center-hint" id="centerHint"></div>
+    <div class="banner" id="banner"></div>
+    <div class="flash" id="flash"></div>
+    <div class="toast" id="toast"></div>
+  </div>
+
+  <!-- ============ 我的手牌 ============ -->
+  <div class="handzone">
+    <div class="card probe" id="cardProbe"></div>
+    <div class="hand-tools">
+      <button class="mini" id="btnSortTip">排序：大→小</button>
+      <button class="mini" id="btnClear">清空选择</button>
+    </div>
+    <div class="my-hand" id="myHand"></div>
+  </div>
+
+  <!-- ============ 操作区 ============ -->
+  <div class="actionbar" id="actionbar">
+    <!-- 出牌阶段 -->
+    <div class="act-group" id="actPlay">
+      <button class="btn btn-ghost" id="btnPass">不出</button>
+      <button class="btn btn-hint" id="btnHint">提示</button>
+      <button class="btn btn-play" id="btnPlay">出牌</button>
+    </div>
+    <!-- 叫分阶段 -->
+    <div class="act-group hide" id="actBid">
+      <button class="btn btn-ghost" data-bid="0">不叫</button>
+      <button class="btn btn-bid" data-bid="1">1 分</button>
+      <button class="btn btn-bid" data-bid="2">2 分</button>
+      <button class="btn btn-bid" data-bid="3">3 分</button>
+    </div>
+    <!-- 结算 -->
+    <div class="act-group hide" id="actOver">
+      <button class="btn btn-play" id="btnAgain">再来一局</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 开始界面 ============ -->
+<div class="start-screen" id="startScreen">
+  <div class="start-card">
+    <div class="start-crown">♠ ♥ ♣ ♦</div>
+    <h1>斗 地 主</h1>
+    <p class="start-sub">1 名真人玩家 &nbsp;+&nbsp; 2 名电脑对手</p>
+    <div class="start-avatars">
+      <img src="assets/avatars/landlord.png" alt="地主">
+      <img src="assets/avatars/farmer1.png" alt="农民">
+      <img src="assets/avatars/farmer2.png" alt="农民">
+    </div>
+    <button class="btn btn-start" id="btnStart">开 始 游 戏</button>
+    <p class="start-tip">带背景音乐与牌型音效，建议开启声音 ♪</p>
+  </div>
+</div>
+
+<!-- ============ 规则弹窗 ============ -->
+<div class="modal" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" id="modalClose">×</button>
+    <h2>玩法与牌型</h2>
+    <div class="modal-body">
+      <h3>基本流程</h3>
+      <p>一副牌 54 张，每人 17 张，留 3 张底牌。叫分最高者成为<b>地主</b>，拿到底牌共 20 张，先出牌。先出完手牌的一方获胜。</p>
+
+      <h3>牌型</h3>
+      <table class="rules-table">
+        <tr><td>单张 / 对子 / 三张</td><td>任意同点数 1 / 2 / 3 张</td></tr>
+        <tr><td>三带一 / 三带二</td><td>三张 + 1 张单牌 / 1 对</td></tr>
+        <tr><td>顺子</td><td>5 张以上连续单牌（3~A，不含 2 和王）</td></tr>
+        <tr><td>连对</td><td>3 对以上连续对子（3~A）</td></tr>
+        <tr><td>飞机</td><td>2 组以上连续三张；可带等量单牌或对子</td></tr>
+        <tr><td>四带二</td><td>四张 + 2 张单牌 / 2 对</td></tr>
+        <tr><td>炸弹 / 王炸</td><td>四张同点 / 双王，可压任意牌型（王炸最大）</td></tr>
+      </table>
+
+      <h3>大小与倍数</h3>
+      <p>大小顺序：3 &lt; 4 &lt; … &lt; K &lt; A &lt; 2 &lt; 小王 &lt; 大王。只有同牌型、同张数才能比较。</p>
+      <p>每出一个<b>炸弹或王炸</b>，倍数 ×2；<b>春天</b>（农民一张没出、地主走完）倍数 ×2；<b>反春天</b>（地主只出了一手、农民走完）倍数 ×2。</p>
+      <p>地主胜：地主 +2×底分×倍数，每个农民 −底分×倍数；农民胜则相反。</p>
+
+      <h3>操作</h3>
+      <p>点击手牌选中/取消，「提示」会自动帮你找出可出的牌，「不出」表示要不起。每回合有时间限制，超时将自动帮你出牌或不出。</p>
+    </div>
+  </div>
+</div>
+
+<!-- ============ 结算面板 ============ -->
+<div class="result" id="result">
+  <div class="result-box">
+    <div class="result-title" id="resTitle">胜利</div>
+    <div class="result-sub" id="resSub"></div>
+    <div class="result-tags" id="resTags"></div>
+    <div class="result-score" id="resScore"></div>
+    <button class="btn btn-play" id="btnResultAgain">再来一局</button>
+  </div>
+</div>
+
+<script src="js/cards.js"></script>
+<script src="js/rules.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/ai.js"></script>
+<script src="js/game.js"></script>
+<script src="js/ui.js"></script>
+</body>
+</html>
